@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
+import { Route as AuthenticatedVehiclesNewRouteImport } from './routes/_authenticated.vehicles.new'
+import { Route as AuthenticatedVehiclesIdRouteImport } from './routes/_authenticated.vehicles.$id'
+import { Route as AuthenticatedVehiclesIdEditRouteImport } from './routes/_authenticated.vehicles.$id.edit'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -27,27 +31,81 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedVehiclesNewRoute =
+  AuthenticatedVehiclesNewRouteImport.update({
+    id: '/vehicles/new',
+    path: '/vehicles/new',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedVehiclesIdRoute = AuthenticatedVehiclesIdRouteImport.update({
+  id: '/vehicles/$id',
+  path: '/vehicles/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedVehiclesIdEditRoute =
+  AuthenticatedVehiclesIdEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => AuthenticatedVehiclesIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/vehicles/$id': typeof AuthenticatedVehiclesIdRouteWithChildren
+  '/vehicles/new': typeof AuthenticatedVehiclesNewRoute
+  '/vehicles/$id/edit': typeof AuthenticatedVehiclesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
+  '/vehicles/$id': typeof AuthenticatedVehiclesIdRouteWithChildren
+  '/vehicles/new': typeof AuthenticatedVehiclesNewRoute
+  '/vehicles/$id/edit': typeof AuthenticatedVehiclesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/vehicles/$id': typeof AuthenticatedVehiclesIdRouteWithChildren
+  '/_authenticated/vehicles/new': typeof AuthenticatedVehiclesNewRoute
+  '/_authenticated/vehicles/$id/edit': typeof AuthenticatedVehiclesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/settings'
+    | '/vehicles/$id'
+    | '/vehicles/new'
+    | '/vehicles/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/'
-  id: '__root__' | '/_authenticated' | '/login' | '/_authenticated/'
+  to:
+    | '/login'
+    | '/settings'
+    | '/'
+    | '/vehicles/$id'
+    | '/vehicles/new'
+    | '/vehicles/$id/edit'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/login'
+    | '/_authenticated/settings'
+    | '/_authenticated/'
+    | '/_authenticated/vehicles/$id'
+    | '/_authenticated/vehicles/new'
+    | '/_authenticated/vehicles/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +136,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/vehicles/new': {
+      id: '/_authenticated/vehicles/new'
+      path: '/vehicles/new'
+      fullPath: '/vehicles/new'
+      preLoaderRoute: typeof AuthenticatedVehiclesNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/vehicles/$id': {
+      id: '/_authenticated/vehicles/$id'
+      path: '/vehicles/$id'
+      fullPath: '/vehicles/$id'
+      preLoaderRoute: typeof AuthenticatedVehiclesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/vehicles/$id/edit': {
+      id: '/_authenticated/vehicles/$id/edit'
+      path: '/edit'
+      fullPath: '/vehicles/$id/edit'
+      preLoaderRoute: typeof AuthenticatedVehiclesIdEditRouteImport
+      parentRoute: typeof AuthenticatedVehiclesIdRoute
+    }
   }
 }
 
+interface AuthenticatedVehiclesIdRouteChildren {
+  AuthenticatedVehiclesIdEditRoute: typeof AuthenticatedVehiclesIdEditRoute
+}
+
+const AuthenticatedVehiclesIdRouteChildren: AuthenticatedVehiclesIdRouteChildren =
+  {
+    AuthenticatedVehiclesIdEditRoute: AuthenticatedVehiclesIdEditRoute,
+  }
+
+const AuthenticatedVehiclesIdRouteWithChildren =
+  AuthenticatedVehiclesIdRoute._addFileChildren(
+    AuthenticatedVehiclesIdRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedVehiclesIdRoute: typeof AuthenticatedVehiclesIdRouteWithChildren
+  AuthenticatedVehiclesNewRoute: typeof AuthenticatedVehiclesNewRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedVehiclesIdRoute: AuthenticatedVehiclesIdRouteWithChildren,
+  AuthenticatedVehiclesNewRoute: AuthenticatedVehiclesNewRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
