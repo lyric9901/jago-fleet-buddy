@@ -472,23 +472,24 @@ export function VehicleForm({
             return (
               <div
                 key={key}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-4"
+                className="flex items-center justify-between gap-3 rounded-xl border bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
                     {docFile?.name.endsWith(".pdf") ? (
                       <FileText className="h-5 w-5" />
                     ) : (
                       <ImageIcon className="h-5 w-5" />
                     )}
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-medium">{DOCUMENT_LABELS[key]}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="truncate text-xs text-muted-foreground">
                       {docFile ? docFile.name : "No file uploaded"}
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-2">
                   {docFile && (
                     <>
