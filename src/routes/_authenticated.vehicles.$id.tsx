@@ -184,21 +184,18 @@ function VehicleProfile() {
           <Card title="Expiry Dates">
             {EXPIRY_FIELDS.map((f) => {
               const date = vehicle[f.key] as string | null | undefined;
-              const s = expiryStatus(date);
               return (
                 <div
                   key={f.label}
                   className="flex items-center justify-between border-b py-2 last:border-0"
                 >
                   <span className="text-sm text-muted-foreground">{f.label}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">{formatDate(date)}</span>
-                    <ExpiryDot status={s} />
-                  </div>
+                  <span className="text-sm">{formatDate(date)}</span>
                 </div>
               );
             })}
           </Card>
+
         </TabsContent>
 
         <TabsContent value="driver" className="mt-4">
