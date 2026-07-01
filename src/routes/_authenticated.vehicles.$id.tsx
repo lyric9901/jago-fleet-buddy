@@ -36,7 +36,14 @@ export const Route = createFileRoute("/_authenticated/vehicles/$id")({
 });
 
 
+function isImageDoc(d: VehicleDocument) {
+  const n = d.name.toLowerCase();
+  return /\.(webp|jpe?g|png|gif|avif)$/.test(n);
+}
+
 function VehicleProfile() {
+  const [viewer, setViewer] = useState<{ doc: VehicleDocument; label: string } | null>(null);
+
   const { id } = Route.useParams();
   const router = useRouter();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
