@@ -102,16 +102,16 @@ function VehicleProfile() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="font-mono text-2xl font-semibold tracking-wide md:text-3xl">
+            <h1 className="truncate font-mono text-xl font-semibold tracking-wide sm:text-2xl md:text-3xl">
               {vehicle.vehicleNumber}
             </h1>
             <StatusBadge status={vehicle.status} />
           </div>
           {vehicle.vehicleName && (
-            <p className="mt-1 text-muted-foreground">{vehicle.vehicleName}</p>
+            <p className="mt-1 truncate text-muted-foreground">{vehicle.vehicleName}</p>
           )}
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge variant="secondary">{vehicle.vehicleType}</Badge>
@@ -123,18 +123,18 @@ function VehicleProfile() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline">
+        <div className="flex shrink-0 items-center gap-2">
+          <Button asChild variant="outline" size="sm">
             <Link to="/vehicles/$id/edit" params={{ id: vehicle.id }}>
               <Pencil className="h-4 w-4" />
-              Edit
+              <span className="hidden sm:inline">Edit</span>
             </Link>
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">
+              <Button variant="destructive" size="sm">
                 <Trash2 className="h-4 w-4" />
-                Delete
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -161,13 +161,14 @@ function VehicleProfile() {
       </div>
 
       <Tabs defaultValue="vehicle">
-        <TabsList className="flex w-full flex-wrap justify-start gap-1 bg-muted/60 p-1">
+        <TabsList className="flex w-full justify-start gap-1 overflow-x-auto bg-muted/60 p-1">
           <TabsTrigger value="vehicle">Vehicle</TabsTrigger>
           <TabsTrigger value="driver">Driver</TabsTrigger>
           <TabsTrigger value="owners">Owners</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="vehicle" className="mt-4 grid gap-4 md:grid-cols-2">
           <Card title="Details">
