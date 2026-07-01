@@ -490,27 +490,21 @@ export function VehicleForm({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-2">
                   {docFile && (
-                    <>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <a href={docFile.url} target="_blank" rel="noreferrer">
-                          View
-                        </a>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDocDelete(key)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDocDelete(key)}
+                      title="Remove"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   )}
                   <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
                     <Upload className="h-4 w-4" />
-                    {docFile ? "Replace" : "Upload"}
+                    <span className="hidden sm:inline">{docFile ? "Replace" : "Upload"}</span>
                     <input
                       type="file"
                       accept=".pdf,image/jpeg,image/jpg,image/png,image/webp"
@@ -522,6 +516,7 @@ export function VehicleForm({
                     />
                   </label>
                 </div>
+
               </div>
             );
           })}
