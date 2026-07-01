@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { useVehiclesSubscription, useFilteredVehicles } from "@/lib/use-vehicles";
 import { formatDate } from "@/lib/expiry";
 import { EXPIRY_FIELDS, type Vehicle } from "@/lib/types";
+import { useAuth } from "@/lib/auth-context";
 
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/")({
 
 function Dashboard() {
   const { vehicles, loading } = useVehiclesSubscription();
+  const { isAdmin } = useAuth();
   const [query, setQuery] = useState("");
   const filtered = useFilteredVehicles(vehicles, query);
 
@@ -45,12 +47,14 @@ function Dashboard() {
             Overview of your fleet at a glance.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/vehicles/new">
-            <Plus className="h-4 w-4" />
-            Add Vehicle
-          </Link>
-        </Button>
+        {isAdmin && (
+          <Button asChild>
+            <Link to="/vehicles/new">
+              <Plus className="h-4 w-4" />
+              Add Vehicle
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Search */}
@@ -88,7 +92,7 @@ function Dashboard() {
               </span>
             </div>
             {recent.length === 0 ? (
-              <EmptyState />
+              <EmptyState canAdd={isAdmin} />
             ) : (
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {recent.map((v) => (
@@ -215,20 +219,25 @@ function nextExpiryLabel(v: Vehicle) {
   return formatDate(dates[0].toISOString());
 }
 
-function EmptyState() {
+function EmptyState({ canAdd }: { canAdd: boolean }) {
   return (
     <div className="rounded-2xl border border-dashed bg-card p-12 text-center">
       <Car className="mx-auto h-10 w-10 text-muted-foreground/60" />
       <h3 className="mt-4 text-base font-semibold">No vehicles yet</h3>
       <p className="mt-1 text-sm text-muted-foreground">
-        Add your first vehicle to start managing your fleet.
+        {canAdd
+          ? "Add your first vehicle to start managing your fleet."
+          : "No vehicles have been added yet."}
       </p>
-      <Button asChild className="mt-6">
-        <Link to="/vehicles/new">
-          <Plus className="h-4 w-4" />
-          Add Vehicle
-        </Link>
-      </Button>
+      {canAdd && (
+        <Button asChild className="mt-6">
+          <Link to="/vehicles/new">
+            <Plus className="h-4 w-4" />
+            Add Vehicle
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
+
