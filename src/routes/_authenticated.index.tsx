@@ -92,7 +92,7 @@ function Dashboard() {
               </span>
             </div>
             {recent.length === 0 ? (
-              <EmptyState />
+              <EmptyState canAdd={isAdmin} />
             ) : (
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {recent.map((v) => (
