@@ -29,6 +29,7 @@ import {
 import { fetchVehicle, deleteVehicle } from "@/lib/vehicles";
 import { DOCUMENT_LABELS, EXPIRY_FIELDS, type DocumentKey, type Vehicle, type VehicleDocument } from "@/lib/types";
 import { formatDate } from "@/lib/expiry";
+import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/vehicles/$id")({
