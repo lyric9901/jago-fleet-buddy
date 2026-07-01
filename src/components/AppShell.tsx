@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { username, signOutUser } = useAuth();
+  const { username, signOutUser, isAdmin, isVisitor } = useAuth();
   const router = useRouter();
 
   async function handleSignOut() {
@@ -33,17 +33,26 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavLink to="/" icon={<LayoutDashboard className="h-4 w-4" />}>
               Dashboard
             </NavLink>
-            <NavLink to="/vehicles/new" icon={<Plus className="h-4 w-4" />}>
-              Add Vehicle
-            </NavLink>
-            <NavLink to="/settings" icon={<Settings className="h-4 w-4" />}>
-              Settings
-            </NavLink>
+            {isAdmin && (
+              <>
+                <NavLink to="/vehicles/new" icon={<Plus className="h-4 w-4" />}>
+                  Add Vehicle
+                </NavLink>
+                <NavLink to="/settings" icon={<Settings className="h-4 w-4" />}>
+                  Settings
+                </NavLink>
+              </>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
+            {isVisitor && (
+              <span className="hidden rounded-full border border-border bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground sm:inline">
+                Visitor
+              </span>
+            )}
             <span className="hidden text-sm text-muted-foreground sm:inline">
-              {username}
+              {isVisitor ? "Read-only" : username}
             </span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4" />
@@ -55,12 +64,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           <NavLink to="/" icon={<LayoutDashboard className="h-4 w-4" />}>
             Dashboard
           </NavLink>
-          <NavLink to="/vehicles/new" icon={<Plus className="h-4 w-4" />}>
-            Add
-          </NavLink>
-          <NavLink to="/settings" icon={<Settings className="h-4 w-4" />}>
-            Settings
-          </NavLink>
+          {isAdmin && (
+            <>
+              <NavLink to="/vehicles/new" icon={<Plus className="h-4 w-4" />}>
+                Add
+              </NavLink>
+              <NavLink to="/settings" icon={<Settings className="h-4 w-4" />}>
+                Settings
+              </NavLink>
+            </>
+          )}
+          {isVisitor && (
+            <span className="ml-auto pr-2 text-[11px] font-medium text-muted-foreground">
+              Visitor · read-only
+            </span>
+          )}
         </nav>
       </header>
 
