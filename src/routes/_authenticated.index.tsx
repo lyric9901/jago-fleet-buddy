@@ -6,8 +6,6 @@ import {
   Activity,
   Pause,
   Wrench,
-  AlertTriangle,
-  Clock,
   Plus,
   ChevronRight,
 } from "lucide-react";
@@ -15,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useVehiclesSubscription, useFilteredVehicles } from "@/lib/use-vehicles";
-import { expiryStatus, formatDate } from "@/lib/expiry";
+import { formatDate } from "@/lib/expiry";
 import { EXPIRY_FIELDS, type Vehicle } from "@/lib/types";
+
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Dashboard,
