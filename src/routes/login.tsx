@@ -14,12 +14,13 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { signIn, user, loading } = useAuth();
+  const { signIn, signInAsVisitor, user, loading } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [visitorLoading, setVisitorLoading] = useState(false);
 
   useEffect(() => {
     if (!loading && user) router.navigate({ to: "/", replace: true });
@@ -40,6 +41,19 @@ function LoginPage() {
       toast.error((err as Error).message || "Login failed");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function onVisitor() {
+    setVisitorLoading(true);
+    try {
+      await signInAsVisitor();
+      toast.success("Signed in as visitor");
+      router.navigate({ to: "/", replace: true });
+    } catch (err) {
+      toast.error((err as Error).message || "Failed to enter as visitor");
+    } finally {
+      setVisitorLoading(false);
     }
   }
 
