@@ -24,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/")({
 
 function Dashboard() {
   const { vehicles, loading } = useVehiclesSubscription();
+  const { isAdmin } = useAuth();
   const [query, setQuery] = useState("");
   const filtered = useFilteredVehicles(vehicles, query);
 
