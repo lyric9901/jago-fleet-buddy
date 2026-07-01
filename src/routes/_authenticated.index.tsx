@@ -47,12 +47,14 @@ function Dashboard() {
             Overview of your fleet at a glance.
           </p>
         </div>
-        <Button asChild>
-          <Link to="/vehicles/new">
-            <Plus className="h-4 w-4" />
-            Add Vehicle
-          </Link>
-        </Button>
+        {isAdmin && (
+          <Button asChild>
+            <Link to="/vehicles/new">
+              <Plus className="h-4 w-4" />
+              Add Vehicle
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Search */}
