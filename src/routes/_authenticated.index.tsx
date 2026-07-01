@@ -6,8 +6,6 @@ import {
   Activity,
   Pause,
   Wrench,
-  AlertTriangle,
-  Clock,
   Plus,
   ChevronRight,
 } from "lucide-react";
@@ -15,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useVehiclesSubscription, useFilteredVehicles } from "@/lib/use-vehicles";
-import { expiryStatus, formatDate } from "@/lib/expiry";
+import { formatDate } from "@/lib/expiry";
 import { EXPIRY_FIELDS, type Vehicle } from "@/lib/types";
+
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Dashboard,
@@ -32,15 +31,6 @@ function Dashboard() {
   const idle = vehicles.filter((v) => v.status === "Idle").length;
   const maintenance = vehicles.filter((v) => v.status === "Maintenance").length;
 
-  let expired = 0;
-  let expiringSoon = 0;
-  for (const v of vehicles) {
-    for (const f of EXPIRY_FIELDS) {
-      const s = expiryStatus(v[f.key] as string | null | undefined);
-      if (s === "expired") expired++;
-      else if (s === "soon") expiringSoon++;
-    }
-  }
 
   const recent = vehicles.slice(0, 6);
 
@@ -81,14 +71,13 @@ function Dashboard() {
       {!query.trim() && (
         <>
           {/* Stat cards */}
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             <StatCard label="Total" value={total} icon={<Car className="h-4 w-4" />} tone="primary" />
             <StatCard label="Running" value={running} icon={<Activity className="h-4 w-4" />} tone="success" />
             <StatCard label="Idle" value={idle} icon={<Pause className="h-4 w-4" />} tone="muted" />
             <StatCard label="Maintenance" value={maintenance} icon={<Wrench className="h-4 w-4" />} tone="warning" />
-            <StatCard label="Expired Docs" value={expired} icon={<AlertTriangle className="h-4 w-4" />} tone="destructive" />
-            <StatCard label="Expiring Soon" value={expiringSoon} icon={<Clock className="h-4 w-4" />} tone="warning" />
           </div>
+
 
           {/* Recent */}
           <section>
@@ -148,12 +137,6 @@ function StatCard({
 }
 
 function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
-  const worst = EXPIRY_FIELDS.map((f) =>
-    expiryStatus(vehicle[f.key] as string | null | undefined),
-  );
-  const hasExpired = worst.includes("expired");
-  const hasSoon = worst.includes("soon");
-
   return (
     <Link
       to="/vehicles/$id"
@@ -161,35 +144,26 @@ function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
       className="group block rounded-xl border bg-card p-4 shadow-sm transition hover:border-primary/40 hover:shadow-md"
     >
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="font-mono text-base font-semibold tracking-wide">
+        <div className="min-w-0">
+          <div className="truncate font-mono text-base font-semibold tracking-wide">
             {vehicle.vehicleNumber}
           </div>
           {vehicle.vehicleName && (
-            <div className="mt-0.5 text-sm text-muted-foreground">
+            <div className="mt-0.5 truncate text-sm text-muted-foreground">
               {vehicle.vehicleName}
             </div>
           )}
         </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-foreground" />
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-foreground" />
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <Badge variant="secondary">{vehicle.vehicleType}</Badge>
         <StatusBadge status={vehicle.status} />
-        {hasExpired && (
-          <Badge className="bg-destructive text-destructive-foreground">
-            Expired
-          </Badge>
-        )}
-        {!hasExpired && hasSoon && (
-          <Badge className="bg-warning text-warning-foreground">
-            Expiring soon
-          </Badge>
-        )}
       </div>
     </Link>
   );
 }
+
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {

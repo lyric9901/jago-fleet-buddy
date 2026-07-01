@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Trash2, FileText, ExternalLink } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2, FileText, Eye, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,16 +20,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { fetchVehicle, deleteVehicle } from "@/lib/vehicles";
-import { DOCUMENT_LABELS, EXPIRY_FIELDS, type DocumentKey, type Vehicle } from "@/lib/types";
-import { expiryStatus, formatDate } from "@/lib/expiry";
+import { DOCUMENT_LABELS, EXPIRY_FIELDS, type DocumentKey, type Vehicle, type VehicleDocument } from "@/lib/types";
+import { formatDate } from "@/lib/expiry";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/vehicles/$id")({
   component: VehicleProfile,
 });
 
+
+function isImageDoc(d: VehicleDocument) {
+  const n = d.name.toLowerCase();
+  return /\.(webp|jpe?g|png|gif|avif)$/.test(n);
+}
+
 function VehicleProfile() {
+  const [viewer, setViewer] = useState<{ doc: VehicleDocument; label: string } | null>(null);
+
   const { id } = Route.useParams();
   const router = useRouter();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
@@ -88,16 +102,16 @@ function VehicleProfile() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+        <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="font-mono text-2xl font-semibold tracking-wide md:text-3xl">
+            <h1 className="truncate font-mono text-xl font-semibold tracking-wide sm:text-2xl md:text-3xl">
               {vehicle.vehicleNumber}
             </h1>
             <StatusBadge status={vehicle.status} />
           </div>
           {vehicle.vehicleName && (
-            <p className="mt-1 text-muted-foreground">{vehicle.vehicleName}</p>
+            <p className="mt-1 truncate text-muted-foreground">{vehicle.vehicleName}</p>
           )}
           <div className="mt-2 flex flex-wrap gap-1.5">
             <Badge variant="secondary">{vehicle.vehicleType}</Badge>
@@ -109,18 +123,18 @@ function VehicleProfile() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline">
+        <div className="flex shrink-0 items-center gap-2">
+          <Button asChild variant="outline" size="sm">
             <Link to="/vehicles/$id/edit" params={{ id: vehicle.id }}>
               <Pencil className="h-4 w-4" />
-              Edit
+              <span className="hidden sm:inline">Edit</span>
             </Link>
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">
+              <Button variant="destructive" size="sm">
                 <Trash2 className="h-4 w-4" />
-                Delete
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -147,13 +161,14 @@ function VehicleProfile() {
       </div>
 
       <Tabs defaultValue="vehicle">
-        <TabsList className="flex w-full flex-wrap justify-start gap-1 bg-muted/60 p-1">
+        <TabsList className="flex w-full justify-start gap-1 overflow-x-auto bg-muted/60 p-1">
           <TabsTrigger value="vehicle">Vehicle</TabsTrigger>
           <TabsTrigger value="driver">Driver</TabsTrigger>
           <TabsTrigger value="owners">Owners</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="vehicle" className="mt-4 grid gap-4 md:grid-cols-2">
           <Card title="Details">
@@ -169,21 +184,18 @@ function VehicleProfile() {
           <Card title="Expiry Dates">
             {EXPIRY_FIELDS.map((f) => {
               const date = vehicle[f.key] as string | null | undefined;
-              const s = expiryStatus(date);
               return (
                 <div
                   key={f.label}
                   className="flex items-center justify-between border-b py-2 last:border-0"
                 >
                   <span className="text-sm text-muted-foreground">{f.label}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">{formatDate(date)}</span>
-                    <ExpiryDot status={s} />
-                  </div>
+                  <span className="text-sm">{formatDate(date)}</span>
                 </div>
               );
             })}
           </Card>
+
         </TabsContent>
 
         <TabsContent value="driver" className="mt-4">
@@ -237,31 +249,45 @@ function VehicleProfile() {
             return (
               <div
                 key={key}
-                className="flex items-center justify-between rounded-xl border bg-card p-4"
+                className="flex items-center justify-between gap-3 rounded-xl border bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
                     <FileText className="h-5 w-5" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-medium">{DOCUMENT_LABELS[key]}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="truncate text-xs text-muted-foreground">
                       {d ? d.name : "Not uploaded"}
                     </div>
                   </div>
                 </div>
                 {d && (
-                  <Button asChild variant="outline" size="sm">
-                    <a href={d.url} target="_blank" rel="noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                      View
-                    </a>
-                  </Button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {isImageDoc(d) ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setViewer({ doc: d, label: DOCUMENT_LABELS[key] })}
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span className="hidden sm:inline">View</span>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={d.url} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          <span className="hidden sm:inline">Open</span>
+                        </a>
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             );
           })}
         </TabsContent>
+
 
         <TabsContent value="notes" className="mt-4">
           <Card title="Notes">
@@ -273,9 +299,35 @@ function VehicleProfile() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={!!viewer} onOpenChange={(o) => !o && setViewer(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{viewer?.label}</DialogTitle>
+          </DialogHeader>
+          {viewer && (
+            <div className="space-y-3">
+              <img
+                src={viewer.doc.url}
+                alt={viewer.label}
+                className="max-h-[70vh] w-full rounded-md border object-contain"
+              />
+              <div className="flex justify-end">
+                <Button asChild variant="outline" size="sm">
+                  <a href={viewer.doc.url} target="_blank" rel="noreferrer">
+                    <ExternalLink className="h-4 w-4" />
+                    Open in new tab
+                  </a>
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -312,23 +364,5 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function ExpiryDot({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    expired: "bg-destructive",
-    soon: "bg-warning",
-    valid: "bg-success",
-    missing: "bg-muted-foreground/40",
-  };
-  const label: Record<string, string> = {
-    expired: "Expired",
-    soon: "Expiring soon",
-    valid: "Valid",
-    missing: "Not set",
-  };
-  return (
-    <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
-      <span className={`h-2 w-2 rounded-full ${map[status]}`} />
-      {label[status]}
-    </span>
-  );
-}
+
+

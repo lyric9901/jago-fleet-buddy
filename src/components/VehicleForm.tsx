@@ -205,7 +205,7 @@ export function VehicleForm({
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <Tabs defaultValue="basic">
-        <TabsList className="flex w-full flex-wrap justify-start gap-1 bg-muted/60 p-1">
+        <TabsList className="flex w-full justify-start gap-1 overflow-x-auto bg-muted/60 p-1">
           <TabsTrigger value="basic">Vehicle</TabsTrigger>
           <TabsTrigger value="driver">Driver</TabsTrigger>
           <TabsTrigger value="owners">Owners</TabsTrigger>
@@ -213,6 +213,7 @@ export function VehicleForm({
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="basic" className="mt-4">
           <Section title="Basic Information">
@@ -471,44 +472,39 @@ export function VehicleForm({
             return (
               <div
                 key={key}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-4"
+                className="flex items-center justify-between gap-3 rounded-xl border bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
                     {docFile?.name.endsWith(".pdf") ? (
                       <FileText className="h-5 w-5" />
                     ) : (
                       <ImageIcon className="h-5 w-5" />
                     )}
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-medium">{DOCUMENT_LABELS[key]}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="truncate text-xs text-muted-foreground">
                       {docFile ? docFile.name : "No file uploaded"}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+
+                <div className="flex shrink-0 items-center gap-2">
                   {docFile && (
-                    <>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <a href={docFile.url} target="_blank" rel="noreferrer">
-                          View
-                        </a>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDocDelete(key)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDocDelete(key)}
+                      title="Remove"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   )}
                   <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
                     <Upload className="h-4 w-4" />
-                    {docFile ? "Replace" : "Upload"}
+                    <span className="hidden sm:inline">{docFile ? "Replace" : "Upload"}</span>
                     <input
                       type="file"
                       accept=".pdf,image/jpeg,image/jpg,image/png,image/webp"
@@ -520,6 +516,7 @@ export function VehicleForm({
                     />
                   </label>
                 </div>
+
               </div>
             );
           })}
