@@ -219,20 +219,25 @@ function nextExpiryLabel(v: Vehicle) {
   return formatDate(dates[0].toISOString());
 }
 
-function EmptyState() {
+function EmptyState({ canAdd }: { canAdd: boolean }) {
   return (
     <div className="rounded-2xl border border-dashed bg-card p-12 text-center">
       <Car className="mx-auto h-10 w-10 text-muted-foreground/60" />
       <h3 className="mt-4 text-base font-semibold">No vehicles yet</h3>
       <p className="mt-1 text-sm text-muted-foreground">
-        Add your first vehicle to start managing your fleet.
+        {canAdd
+          ? "Add your first vehicle to start managing your fleet."
+          : "No vehicles have been added yet."}
       </p>
-      <Button asChild className="mt-6">
-        <Link to="/vehicles/new">
-          <Plus className="h-4 w-4" />
-          Add Vehicle
-        </Link>
-      </Button>
+      {canAdd && (
+        <Button asChild className="mt-6">
+          <Link to="/vehicles/new">
+            <Plus className="h-4 w-4" />
+            Add Vehicle
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
+
