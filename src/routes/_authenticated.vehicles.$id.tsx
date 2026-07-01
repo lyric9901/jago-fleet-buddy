@@ -299,9 +299,35 @@ function VehicleProfile() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <Dialog open={!!viewer} onOpenChange={(o) => !o && setViewer(null)}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{viewer?.label}</DialogTitle>
+          </DialogHeader>
+          {viewer && (
+            <div className="space-y-3">
+              <img
+                src={viewer.doc.url}
+                alt={viewer.label}
+                className="max-h-[70vh] w-full rounded-md border object-contain"
+              />
+              <div className="flex justify-end">
+                <Button asChild variant="outline" size="sm">
+                  <a href={viewer.doc.url} target="_blank" rel="noreferrer">
+                    <ExternalLink className="h-4 w-4" />
+                    Open in new tab
+                  </a>
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
