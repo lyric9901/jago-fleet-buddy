@@ -31,15 +31,6 @@ function Dashboard() {
   const idle = vehicles.filter((v) => v.status === "Idle").length;
   const maintenance = vehicles.filter((v) => v.status === "Maintenance").length;
 
-  let expired = 0;
-  let expiringSoon = 0;
-  for (const v of vehicles) {
-    for (const f of EXPIRY_FIELDS) {
-      const s = expiryStatus(v[f.key] as string | null | undefined);
-      if (s === "expired") expired++;
-      else if (s === "soon") expiringSoon++;
-    }
-  }
 
   const recent = vehicles.slice(0, 6);
 
