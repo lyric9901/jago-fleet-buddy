@@ -117,10 +117,31 @@ function LoginPage() {
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
+
+          <div className="relative py-1">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-card px-2 text-[11px] uppercase tracking-wide text-muted-foreground">
+                or
+              </span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={onVisitor}
+            disabled={visitorLoading}
+          >
+            {visitorLoading ? "Please wait…" : "Continue as Visitor"}
+          </Button>
         </form>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Private admin portal · Access restricted
+          Visitors can view vehicles — only admins can add, edit, or delete.
         </p>
       </div>
     </div>
