@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Trash2, FileText, ExternalLink } from "lucide-react";
+import { ArrowLeft, Pencil, Trash2, FileText, Eye, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,14 +20,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { fetchVehicle, deleteVehicle } from "@/lib/vehicles";
-import { DOCUMENT_LABELS, EXPIRY_FIELDS, type DocumentKey, type Vehicle } from "@/lib/types";
-import { expiryStatus, formatDate } from "@/lib/expiry";
+import { DOCUMENT_LABELS, EXPIRY_FIELDS, type DocumentKey, type Vehicle, type VehicleDocument } from "@/lib/types";
+import { formatDate } from "@/lib/expiry";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/vehicles/$id")({
   component: VehicleProfile,
 });
+
 
 function VehicleProfile() {
   const { id } = Route.useParams();
