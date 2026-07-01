@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { useVehiclesSubscription, useFilteredVehicles } from "@/lib/use-vehicles";
 import { formatDate } from "@/lib/expiry";
 import { EXPIRY_FIELDS, type Vehicle } from "@/lib/types";
+import { useAuth } from "@/lib/auth-context";
 
 
 export const Route = createFileRoute("/_authenticated/")({
