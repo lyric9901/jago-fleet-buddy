@@ -205,7 +205,7 @@ export function VehicleForm({
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <Tabs defaultValue="basic">
-        <TabsList className="flex w-full flex-wrap justify-start gap-1 bg-muted/60 p-1">
+        <TabsList className="flex w-full justify-start gap-1 overflow-x-auto bg-muted/60 p-1">
           <TabsTrigger value="basic">Vehicle</TabsTrigger>
           <TabsTrigger value="driver">Driver</TabsTrigger>
           <TabsTrigger value="owners">Owners</TabsTrigger>
@@ -213,6 +213,7 @@ export function VehicleForm({
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="basic" className="mt-4">
           <Section title="Basic Information">
