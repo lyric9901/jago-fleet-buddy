@@ -3,9 +3,9 @@
 // tradeoff of embedding the API secret in the browser bundle to keep the
 // implementation simple (signed uploads directly from the client).
 export const CLOUDINARY = {
-  cloudName: "dz23hkigf",
-  apiKey: "186829819645665",
-  apiSecret: "rW9qAtwrNXafLfY1_TAzFYm335w",
+  cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+  apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY,
+  apiSecret: import.meta.env.VITE_CLOUDINARY_API_SECRET,
 };
 
 async function sha1Hex(input: string): Promise<string> {

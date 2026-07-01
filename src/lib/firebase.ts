@@ -4,13 +4,13 @@ import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCYZsTVRLFfS-ZXiOxVr-doxEVaA-g5FTg",
-  authDomain: "jago-travels-9eaac.firebaseapp.com",
-  projectId: "jago-travels-9eaac",
-  storageBucket: "jago-travels-9eaac.firebasestorage.app",
-  messagingSenderId: "589806974613",
-  appId: "1:589806974613:web:f0272053705df2a5244d9c",
-  measurementId: "G-WEEMPQ0M2Q",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 let _app: FirebaseApp | null = null;
