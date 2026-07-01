@@ -71,14 +71,13 @@ function Dashboard() {
       {!query.trim() && (
         <>
           {/* Stat cards */}
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             <StatCard label="Total" value={total} icon={<Car className="h-4 w-4" />} tone="primary" />
             <StatCard label="Running" value={running} icon={<Activity className="h-4 w-4" />} tone="success" />
             <StatCard label="Idle" value={idle} icon={<Pause className="h-4 w-4" />} tone="muted" />
             <StatCard label="Maintenance" value={maintenance} icon={<Wrench className="h-4 w-4" />} tone="warning" />
-            <StatCard label="Expired Docs" value={expired} icon={<AlertTriangle className="h-4 w-4" />} tone="destructive" />
-            <StatCard label="Expiring Soon" value={expiringSoon} icon={<Clock className="h-4 w-4" />} tone="warning" />
           </div>
+
 
           {/* Recent */}
           <section>
