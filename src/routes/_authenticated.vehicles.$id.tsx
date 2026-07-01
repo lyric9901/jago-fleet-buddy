@@ -364,23 +364,5 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function ExpiryDot({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    expired: "bg-destructive",
-    soon: "bg-warning",
-    valid: "bg-success",
-    missing: "bg-muted-foreground/40",
-  };
-  const label: Record<string, string> = {
-    expired: "Expired",
-    soon: "Expiring soon",
-    valid: "Valid",
-    missing: "Not set",
-  };
-  return (
-    <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
-      <span className={`h-2 w-2 rounded-full ${map[status]}`} />
-      {label[status]}
-    </span>
-  );
-}
+
+
