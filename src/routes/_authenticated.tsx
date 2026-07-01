@@ -10,14 +10,26 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const { user, loading } = useAuth();
+  const { user, loading, isVisitor } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (loading) return;
+    if (!user) {
       router.navigate({ to: "/login", replace: true });
+      return;
     }
-  }, [user, loading, router]);
+    if (isVisitor) {
+      const path = router.state.location.pathname;
+      const adminOnly =
+        path === "/settings" ||
+        path === "/vehicles/new" ||
+        /^\/vehicles\/[^/]+\/edit\/?$/.test(path);
+      if (adminOnly) {
+        router.navigate({ to: "/", replace: true });
+      }
+    }
+  }, [user, loading, isVisitor, router]);
 
   if (loading || !user) {
     return (
