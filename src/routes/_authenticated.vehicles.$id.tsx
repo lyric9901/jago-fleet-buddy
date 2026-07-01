@@ -47,6 +47,7 @@ function VehicleProfile() {
 
   const { id } = Route.useParams();
   const router = useRouter();
+  const { isAdmin } = useAuth();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
