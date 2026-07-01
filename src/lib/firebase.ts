@@ -37,8 +37,16 @@ export const DEFAULT_ADMIN = {
   password: "7388739691.sa",
 };
 
+// Shared read-only visitor account (seeded on first "Continue as Visitor").
+export const VISITOR_ACCOUNT = {
+  username: "visitor",
+  password: "visitor-jago-2026-readonly",
+};
+
 export const USERNAME_DOMAIN = "jagotravels.local";
 
 export function usernameToEmail(username: string) {
   return `${username.trim().toLowerCase()}@${USERNAME_DOMAIN}`;
 }
+
+export const VISITOR_EMAIL = usernameToEmail(VISITOR_ACCOUNT.username);
