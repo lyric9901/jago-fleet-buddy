@@ -249,31 +249,45 @@ function VehicleProfile() {
             return (
               <div
                 key={key}
-                className="flex items-center justify-between rounded-xl border bg-card p-4"
+                className="flex items-center justify-between gap-3 rounded-xl border bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground">
                     <FileText className="h-5 w-5" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-medium">{DOCUMENT_LABELS[key]}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="truncate text-xs text-muted-foreground">
                       {d ? d.name : "Not uploaded"}
                     </div>
                   </div>
                 </div>
                 {d && (
-                  <Button asChild variant="outline" size="sm">
-                    <a href={d.url} target="_blank" rel="noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                      View
-                    </a>
-                  </Button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {isImageDoc(d) ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setViewer({ doc: d, label: DOCUMENT_LABELS[key] })}
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span className="hidden sm:inline">View</span>
+                      </Button>
+                    ) : (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={d.url} target="_blank" rel="noreferrer">
+                          <ExternalLink className="h-4 w-4" />
+                          <span className="hidden sm:inline">Open</span>
+                        </a>
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             );
           })}
         </TabsContent>
+
 
         <TabsContent value="notes" className="mt-4">
           <Card title="Notes">
