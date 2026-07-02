@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { getFirebase } from "./firebase";
 import type { Vehicle, VehicleDocument } from "./types";
-import { deleteStoragePath } from "./upload";
+import { deleteFromCloudinary } from "./cloudinary";
 
 const COLLECTION = "vehicles";
 
@@ -50,14 +50,25 @@ export async function saveVehicle(v: Vehicle): Promise<void> {
 
 export async function deleteVehicle(v: Vehicle): Promise<void> {
   const { db } = getFirebase();
-  // Delete all storage files first.
+  
+  // Delete all Cloudinary storage files first.
   const docs = Object.values(v.documents ?? {}).filter(
     Boolean,
   ) as VehicleDocument[];
-  await Promise.all(docs.map((d) => deleteStoragePath(d.path)));
+  
+  // Nuke docs from Cloudinary (using catch so a missing file doesn't break the whole delete)
+  await Promise.all(
+    docs.map((d) => deleteFromCloudinary(d.path).catch(console.error))
+  );
+  
+  // Nuke owner photos from Cloudinary
   for (const o of v.owners ?? []) {
-    if (o.photoPath) await deleteStoragePath(o.photoPath);
+    if (o.photoPath) {
+      await deleteFromCloudinary(o.photoPath).catch(console.error);
+    }
   }
+  
+  // Finally, delete the Firestore doc
   await deleteDoc(doc(db, COLLECTION, v.id));
 }
 
